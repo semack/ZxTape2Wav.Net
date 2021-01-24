@@ -88,7 +88,6 @@ namespace ZxTap2Wav.Net
             writer.Write(len + 26);
             writer.Seek(40, 0);
             writer.Write(len);
-            ;
         }
 
         private void WriteHeader(BinaryWriter writer, List<TapeBlock> blocks, Settings options)
