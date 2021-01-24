@@ -1,6 +1,6 @@
 # zxtap2wav
 
-.NET port of https://github.com/raydac/zxtap-to-wav
+.NET port of [zxtap-to-wav](https://github.com/raydac/zxtap-to-wav)
 
 [![License Apache 2.0](https://img.shields.io/badge/license-Apache%20License%202.0-green.svg)](http://www.apache.org/licenses/LICENSE-2.0)
 
