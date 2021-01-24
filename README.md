@@ -21,8 +21,8 @@ Easy command line utility & Library to convert [.TAP files (a data format for ZX
 ```
 # Example
 ```
-zxtap2wav -i RENEGADE.tap
-zxtap2wav -a -i RENEGADE.tap -o RENEGADE.wav -f 44100 -s
+ZxTap2Wav -i RENEGADE.tap
+ZxTap2Wav -a -i RENEGADE.tap -o RENEGADE.wav -f 44100 -s
 ```
 # How to?
 
