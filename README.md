@@ -1,4 +1,4 @@
-# zxtap2wav
+# ZxTap2Wav.NET
 
 .NET port of [zxtap-to-wav](https://github.com/raydac/zxtap-to-wav)
 
