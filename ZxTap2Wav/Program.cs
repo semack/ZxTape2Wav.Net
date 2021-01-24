@@ -1,17 +1,15 @@
-﻿using System;
-using System.Threading.Tasks;
-using CommandLine;
+﻿using CommandLine;
 using ZxTap2Wav.Net;
 
-namespace TestApp
+namespace ZxTap2Wav
 {
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             var settings = new Settings();
             Parser.Default.ParseArguments<Options>(args)
-                .WithParsed<Options>(o =>
+                .WithParsed(o =>
                 {
                     if (o.Amplify)
                         settings.AmplifySoundSignal = true;
