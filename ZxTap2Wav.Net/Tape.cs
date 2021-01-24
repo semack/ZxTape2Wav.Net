@@ -93,17 +93,17 @@ namespace ZxTap2Wav.Net
         private void WriteHeader(BinaryWriter writer, List<TapeBlock> blocks, Settings options)
         {
             writer.Write(Encoding.ASCII.GetBytes("RIFF"));
-            writer.Write(0);
+            writer.Write(0); // reserved 
             writer.Write(Encoding.ASCII.GetBytes("WAVEfmt "));
             writer.Write(16);
             writer.Write((short) 1);
             writer.Write((short) 1);
             writer.Write((uint) options.WavFrequency);
             writer.Write((uint) options.WavFrequency);
-            writer.Write((short) 2);
+            writer.Write((short) 1);
             writer.Write((short) 8);
             writer.Write(Encoding.ASCII.GetBytes("data"));
-            writer.Write(0);
+            writer.Write(0); // reserved 
         }
 
         private int SaveSoundData(BinaryWriter writer, TapeBlock block, Settings options)
