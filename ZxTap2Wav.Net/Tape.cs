@@ -9,6 +9,7 @@ namespace ZxTap2Wav.Net
     public sealed class Tape
     {
         private readonly List<TapeBlock> _blocks;
+        private static string _fileName;
 
         private Tape(Stream source)
         {
@@ -33,6 +34,11 @@ namespace ZxTap2Wav.Net
 
         public static Tape Create(string fileName)
         {
+            if (!File.Exists(fileName))
+                throw new FileNotFoundException($"File {fileName} not found");
+
+            _fileName = fileName;
+            
             using var stream = new FileStream(fileName, FileMode.Open);
             return new Tape(stream);
         }
@@ -48,10 +54,14 @@ namespace ZxTap2Wav.Net
             };
             return result;
         }
-
-        public void SaveWav(string fileName, Options options = null)
+        
+        
+        public void SaveWav(string fileName = null, Settings options = null)
         {
-            options ??= new Options();
+            if (string.IsNullOrWhiteSpace(fileName))
+                fileName = Path.ChangeExtension(_fileName, ".wav");
+            
+            options ??= new Settings();
             using var writer = new BinaryWriter(new FileStream(fileName, FileMode.Create));
             WriteHeader(writer, _blocks, options);
             var len = 0;
@@ -79,7 +89,7 @@ namespace ZxTap2Wav.Net
             writer.Write(len);;
         }
 
-        private void WriteHeader(BinaryWriter writer, List<TapeBlock> blocks, Options options)
+        private void WriteHeader(BinaryWriter writer, List<TapeBlock> blocks, Settings options)
         {
             writer.Write(Encoding.ASCII.GetBytes("RIFF"));
             writer.Write(0);
@@ -95,7 +105,7 @@ namespace ZxTap2Wav.Net
             writer.Write(0);
         }
 
-        private int  SaveSoundData(BinaryWriter writer, TapeBlock block, Options options)
+        private int  SaveSoundData(BinaryWriter writer, TapeBlock block, Settings options)
         {
             const int PULSELEN_PILOT = 2168;
             const int PULSELEN_SYNC1 = 667;
@@ -141,7 +151,7 @@ namespace ZxTap2Wav.Net
             return result;
         }
 
-        private int DoSignal(BinaryWriter writer, byte signalLevel, int clks, Options options)
+        private int DoSignal(BinaryWriter writer, byte signalLevel, int clks, Settings options)
         {
             var sampleNanoSec = 1000000000D / options.WavFrequency;
             var cpuClkNanoSec = 286D;
@@ -155,7 +165,7 @@ namespace ZxTap2Wav.Net
             return (int)samples;
         }
 
-        private int  WriteDataByte(BinaryWriter writer, byte data, byte hi, byte lo, Options options)
+        private int  WriteDataByte(BinaryWriter writer, byte data, byte hi, byte lo, Settings options)
         {
             const int PULSELEN_ZERO = 855;
             const int PULSELEN_ONE = 1710;
@@ -165,7 +175,7 @@ namespace ZxTap2Wav.Net
             while (mask != 0)
             {
                 var len = (data & mask) == 0 ? PULSELEN_ZERO : PULSELEN_ONE;
-                result = DoSignal(writer, hi, len, options);
+                result += DoSignal(writer, hi, len, options);
                 result += DoSignal(writer, lo, len, options);
                 mask >>= 1;
             }

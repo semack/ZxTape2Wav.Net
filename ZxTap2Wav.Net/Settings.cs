@@ -1,6 +1,6 @@
 namespace ZxTap2Wav.Net
 {
-    public class Options
+    public class Settings
     {
         public bool AmplifySoundSignal { get; set; } = false;
         public bool SilenceOnStart { get; set; } = false;
