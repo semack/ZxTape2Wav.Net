@@ -1,6 +1,6 @@
 # zxtap2wav
 
-.net port of https://github.com/raydac/zxtap-to-wav
+.NET port of https://github.com/raydac/zxtap-to-wav
 
 [![License Apache 2.0](https://img.shields.io/badge/license-Apache%20License%202.0-green.svg)](http://www.apache.org/licenses/LICENSE-2.0)
 
@@ -46,4 +46,8 @@ Contributions are welcome. Just open an Issue or submit a PR.
 
 ## Contact
 You can reach me via my [email](mailto://semack@gmail.com).
+
+## Thanks
+Many thanks especially to [Igor Maznitsa](https://github.com/raydac) for his [library](https://github.com/raydac/zxtap-to-wav).
+
 
