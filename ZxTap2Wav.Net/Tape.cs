@@ -63,7 +63,7 @@ namespace ZxTap2Wav.Net
 
             options ??= new Settings();
             using var writer = new BinaryWriter(new FileStream(fileName, FileMode.Create));
-            WriteHeader(writer, _blocks, options);
+            WriteHeader(writer, options);
             var len = 0;
             for (var index = 0; index < _blocks.Count; index++)
             {
@@ -77,12 +77,12 @@ namespace ZxTap2Wav.Net
                 len += SaveSoundData(writer, _blocks[index], options);
             }
 
-            SetLenght(writer, len);
+            SetLenghts(writer, len);
             writer.Flush();
             writer.Close();
         }
 
-        private void SetLenght(BinaryWriter writer, int len)
+        private void SetLenghts(BinaryWriter writer, int len)
         {
             writer.Seek(4, 0);
             writer.Write(len + 26);
@@ -90,7 +90,7 @@ namespace ZxTap2Wav.Net
             writer.Write(len);
         }
 
-        private void WriteHeader(BinaryWriter writer, List<TapeBlock> blocks, Settings options)
+        private void WriteHeader(BinaryWriter writer, Settings options)
         {
             writer.Write(Encoding.ASCII.GetBytes("RIFF"));
             writer.Write(0); // reserved 
