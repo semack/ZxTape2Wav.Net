@@ -38,3 +38,12 @@ Use parameter `-f 44100`
 ## Sound is too silent
 Use flag `-a` and generated sound in WAV will be amplified to maximum.
 
+## License
+Please see [LICENSE.md](LICENSE.md).
+
+## Contribute
+Contributions are welcome. Just open an Issue or submit a PR. 
+
+## Contact
+You can reach me via my [email](mailto://semack@gmail.com).
+
