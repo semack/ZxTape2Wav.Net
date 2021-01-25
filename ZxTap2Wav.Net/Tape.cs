@@ -62,6 +62,8 @@ namespace ZxTap2Wav.Net
 
         public async Task SaveWavAsync(string fileName = null, OutputSettings settings = null)
         {
+            const int WAV_HEADER_SIZE = 40;
+            
             if (string.IsNullOrWhiteSpace(fileName))
                 fileName = Path.ChangeExtension(_fileName, ".wav");
 
@@ -69,7 +71,7 @@ namespace ZxTap2Wav.Net
             await using var writer = new BinaryWriter(new FileStream(fileName, FileMode.Create));
 
             // reserve for wav header
-            writer.Seek(40, SeekOrigin.Begin);
+            writer.Seek(WAV_HEADER_SIZE, SeekOrigin.Begin);
 
             var len = 0;
             for (var index = 0; index < _blocks.Count; index++)
@@ -81,9 +83,10 @@ namespace ZxTap2Wav.Net
                         len++;
                     }
 
-                len += await SaveSoundDataAsync(writer, _blocks[index], settings);
+                await SaveSoundDataAsync(writer, _blocks[index], settings);
             }
 
+            len = (int)writer.BaseStream.Length - WAV_HEADER_SIZE;
             await WriteHeaderAsync(writer, len, settings.Frequency);
 
             writer.Flush();
@@ -108,7 +111,7 @@ namespace ZxTap2Wav.Net
             await Task.CompletedTask;
         }
 
-        private async Task<int> SaveSoundDataAsync(BinaryWriter writer, TapeBlock block, OutputSettings settings)
+        private async Task SaveSoundDataAsync(BinaryWriter writer, TapeBlock block, OutputSettings settings)
         {
             const int PULSELEN_PILOT = 2168;
             const int PULSELEN_SYNC1 = 667;
@@ -132,26 +135,24 @@ namespace ZxTap2Wav.Net
             }
 
             var signalState = hi;
-            var result = 0;
 
             for (var i = 0; i < pilotImpulses; i++)
             {
-                result += await DoSignalAsync(writer, signalState, PULSELEN_PILOT, settings.Frequency);
+                await DoSignalAsync(writer, signalState, PULSELEN_PILOT, settings.Frequency);
                 signalState = signalState == hi ? lo : hi;
             }
 
             if (signalState == lo)
-                result += await DoSignalAsync(writer, lo, PULSELEN_PILOT, settings.Frequency);
+                await DoSignalAsync(writer, lo, PULSELEN_PILOT, settings.Frequency);
 
-            result += await DoSignalAsync(writer, hi, PULSELEN_SYNC1, settings.Frequency);
-            result += await DoSignalAsync(writer, lo, PULSELEN_SYNC2, settings.Frequency);
+            await DoSignalAsync(writer, hi, PULSELEN_SYNC1, settings.Frequency);
+            await DoSignalAsync(writer, lo, PULSELEN_SYNC2, settings.Frequency);
 
             foreach (var d in block.Data)
-                result += await WriteDataByteAsync(writer, d, hi, lo, settings.Frequency);
+                await WriteDataByteAsync(writer, d, hi, lo, settings.Frequency);
 
-            result += await WriteDataByteAsync(writer, block.CheckSum, hi, lo, settings.Frequency);
-            result += await DoSignalAsync(writer, hi, PULSELEN_SYNC3, settings.Frequency);
-            return result;
+            await WriteDataByteAsync(writer, block.CheckSum, hi, lo, settings.Frequency);
+            await DoSignalAsync(writer, hi, PULSELEN_SYNC3, settings.Frequency);
         }
 
         private static async Task<int> DoSignalAsync(BinaryWriter writer, byte signalLevel, int clks, int frequency)
@@ -165,24 +166,21 @@ namespace ZxTap2Wav.Net
             return await Task.FromResult((int) samples);
         }
 
-        private static async Task<int> WriteDataByteAsync(BinaryWriter writer, byte data, byte hi, byte lo,
+        private static async Task WriteDataByteAsync(BinaryWriter writer, byte data, byte hi, byte lo,
             int frequency)
         {
             const int PULSELEN_ZERO = 855;
             const int PULSELEN_ONE = 1710;
 
             byte mask = 0x80;
-            var result = 0;
 
             while (mask != 0)
             {
                 var len = (data & mask) == 0 ? PULSELEN_ZERO : PULSELEN_ONE;
-                result += await DoSignalAsync(writer, hi, len, frequency);
-                result += await DoSignalAsync(writer, lo, len, frequency);
+                await DoSignalAsync(writer, hi, len, frequency);
+                await DoSignalAsync(writer, lo, len, frequency);
                 mask >>= 1;
             }
-
-            return result;
         }
     }
 }
