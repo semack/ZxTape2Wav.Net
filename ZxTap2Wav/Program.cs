@@ -1,5 +1,6 @@
 ﻿using CommandLine;
 using ZxTap2Wav.Net;
+using ZxTap2Wav.Net.Settings;
 
 namespace ZxTap2Wav
 {
@@ -20,7 +21,7 @@ namespace ZxTap2Wav
                     if (o.Silence)
                         settings.SilenceOnStart = o.Silence;
                     var tape = await Tape.CreateAsync(o.Input);
-                    await tape.SaveWavAsync(o.Output, settings);
+                    await tape.SaveToWavAsync(o.Output, settings);
                 });
         }
     }

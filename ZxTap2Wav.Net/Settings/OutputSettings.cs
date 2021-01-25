@@ -1,4 +1,4 @@
-namespace ZxTap2Wav.Net
+namespace ZxTap2Wav.Net.Settings
 {
     public class OutputSettings
     {

@@ -1,6 +1,6 @@
-namespace ZxTap2Wav.Net
+namespace ZxTap2Wav.Net.Processors.Tap
 {
-    internal struct TapeBlock
+    internal struct TapBlock
     {
         public byte[] Data { get; init; }
         public byte CheckSum { get; init; }
