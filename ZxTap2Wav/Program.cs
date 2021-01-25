@@ -7,20 +7,20 @@ namespace ZxTap2Wav
     {
         private static void Main(string[] args)
         {
-            var settings = new Settings();
+            var settings = new OutputSettings();
             Parser.Default.ParseArguments<Options>(args)
-                .WithParsed(o =>
+                .WithParsed(async o =>
                 {
                     if (o.Amplify)
                         settings.AmplifySoundSignal = true;
                     if (o.Frequency != 0)
-                        settings.WavFrequency = o.Frequency;
+                        settings.Frequency = o.Frequency;
                     if (o.Gap != 0)
                         settings.GapBetweenBlocks = o.Gap;
                     if (o.Silence)
                         settings.SilenceOnStart = o.Silence;
-                    var tape = Tape.Create(o.Input);
-                    tape.SaveWav(o.Output, settings);
+                    var tape = await Tape.CreateAsync(o.Input);
+                    await tape.SaveWavAsync(o.Output, settings);
                 });
         }
     }

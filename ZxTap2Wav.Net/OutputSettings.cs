@@ -1,10 +1,10 @@
 namespace ZxTap2Wav.Net
 {
-    public class Settings
+    public class OutputSettings
     {
         public bool AmplifySoundSignal { get; set; } = false;
         public bool SilenceOnStart { get; set; } = false;
         public short GapBetweenBlocks { get; set; } = 1;
-        public int WavFrequency { get; set; } = 22050;
+        public int Frequency { get; set; } = 22050;
     }
 }
