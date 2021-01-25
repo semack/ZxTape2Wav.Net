@@ -11,6 +11,8 @@ namespace ZxTap2Wav.Net.Processors.Tzx.Blocks
             Description = Encoding.ASCII.GetString(reader.ReadBytes(l));
         }
 
-        public string Description { get; set; }
+        public string Description { get; }
+        
+        public override bool IsValuable { get; } = false;
     }
 }

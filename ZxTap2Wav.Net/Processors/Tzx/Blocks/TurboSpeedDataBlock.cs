@@ -2,12 +2,8 @@ using System.IO;
 
 namespace ZxTap2Wav.Net.Processors.Tzx.Blocks
 {
-    internal class TurboSpeedDataBlock : BlockBase
+    internal class TurboSpeedDataBlock : StandardSpeedDataBlock
     {
-        public TurboSpeedDataBlock()
-        {
-        }
-
         public TurboSpeedDataBlock(BinaryReader reader)
         {
             PilotPulseLen = reader.ReadUInt16();
@@ -22,15 +18,5 @@ namespace ZxTap2Wav.Net.Processors.Tzx.Blocks
             var dl = d[2] << (16 + d[1]) << (8 + d[0]);
             Data = reader.ReadBytes(dl);
         }
-
-        public ushort PilotPulseLen { get; set; }
-        public ushort FirstSyncLen { get; set; }
-        public ushort SecondSyncLen { get; set; }
-        public ushort ZeroLen { get; set; }
-        public ushort OneLen { get; set; }
-        public ushort PilotLen { get; set; }
-        public byte Rem { get; set; }
-        public ushort TailMs { get; set; }
-        public byte[] Data { get; set; }
     }
 }

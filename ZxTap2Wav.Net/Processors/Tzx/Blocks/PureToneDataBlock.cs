@@ -10,7 +10,8 @@ namespace ZxTap2Wav.Net.Processors.Tzx.Blocks
             Pluses = reader.ReadUInt16();
         }
 
-        public ushort PulseLen { get; set; }
-        public ushort Pluses { get; set; }
+        public ushort PulseLen { get; }
+        public ushort Pluses { get; }
+        public override bool IsValuable { get; } = true;
     }
 }

@@ -9,5 +9,7 @@ namespace ZxTap2Wav.Net.Processors.Tzx.Blocks
             var l = reader.ReadByte();
             reader.ReadBytes(l);
         }
+
+        public override bool IsValuable { get; } = false;
     }
 }

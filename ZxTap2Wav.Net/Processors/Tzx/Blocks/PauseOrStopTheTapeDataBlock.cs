@@ -9,6 +9,7 @@ namespace ZxTap2Wav.Net.Processors.Tzx.Blocks
             Duration = reader.ReadUInt16();
         }
 
-        public ushort Duration { get; set; }
+        public ushort Duration { get; }
+        public override bool IsValuable { get; } = true;
     }
 }

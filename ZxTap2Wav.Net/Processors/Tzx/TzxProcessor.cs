@@ -25,7 +25,8 @@ namespace ZxTap2Wav.Net.Processors.Tzx
             while (reader.BaseStream.Position < reader.BaseStream.Length)
             {
                 var block = await ReadBlockAsync(reader);
-                _blocks.Add(block);
+                if (block.IsValuable)
+                   _blocks.Add(block);
             }
 
             return true;
@@ -51,6 +52,9 @@ namespace ZxTap2Wav.Net.Processors.Tzx
                     break;
                 case TzxBlockTypeEnum.PureTone:
                     result = new PureToneDataBlock(reader);
+                    break;
+                case TzxBlockTypeEnum.PureDataBlock:
+                    result = new PureDataBlock(reader);
                     break;
                 case TzxBlockTypeEnum.PulseSequence:
                     result = new PulseSequenceDataBlock(reader);

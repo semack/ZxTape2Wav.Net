@@ -8,9 +8,11 @@ namespace ZxTap2Wav.Net.Processors.Tzx.Blocks
         public TextDescriptionDataBlock(BinaryReader reader)
         {
             var l = reader.ReadByte();
-            Decription = Encoding.ASCII.GetString(reader.ReadBytes(l));
+            Description = Encoding.ASCII.GetString(reader.ReadBytes(l));
         }
 
-        public string Decription { get; set; }
+        public string Description { get; }
+        
+        public override bool IsValuable { get; } = false;
     }
 }

@@ -2,7 +2,7 @@ using System.IO;
 
 namespace ZxTap2Wav.Net.Processors.Tzx.Blocks
 {
-    internal class PureDataBlock : TurboSpeedDataBlock
+    internal class PureDataBlock : StandardSpeedDataBlock
     {
         public PureDataBlock(BinaryReader reader)
         {

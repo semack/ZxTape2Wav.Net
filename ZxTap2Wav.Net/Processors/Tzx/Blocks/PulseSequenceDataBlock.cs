@@ -11,6 +11,7 @@ namespace ZxTap2Wav.Net.Processors.Tzx.Blocks
             for (var i = 0; i < l; i++) Pulses[i] = reader.ReadUInt16();
         }
 
-        public ushort[] Pulses { get; set; }
+        public ushort[] Pulses { get; }
+        public override bool IsValuable { get; } = true;
     }
 }
