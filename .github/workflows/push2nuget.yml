@@ -22,6 +22,6 @@ jobs:
     - name: Build
       run: dotnet build --configuration Release --no-restore 
     - name: Pack
-      run: dotnet pack ZxTape2Wav.Net\ZxTape2Wav.Net.csproj --configuration Release --no-restore --output ./nupkgs --version-suffix --version-suffix .${{ github.run_number }}
+      run: dotnet pack ZxTape2Wav.Net/ZxTape2Wav.Net.csproj --configuration Release --no-restore --output ./nupkgs --version-suffix --version-suffix .${{ github.run_number }}
     - name: Push
       run: dotnet nuget push ./nupkgs/ZxTape2Wav.Net.*.nupkg --source ${{secrets.NUGET_SOURCE}} --api-key ${{secrets.NUGET_API_KEY}} 
