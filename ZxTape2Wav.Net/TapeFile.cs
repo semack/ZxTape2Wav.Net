@@ -13,7 +13,7 @@ namespace ZxTape2Wav
 {
     public sealed class TapeFile
     {
-        private readonly List<BlockBase> _blocks = new();
+        private readonly List<BlockBase> _blocks = new List<BlockBase>();
 
         private string _fileName;
         private TapeFileTypeEnum _tapeFileType = TapeFileTypeEnum.Unknown;
@@ -25,17 +25,16 @@ namespace ZxTape2Wav
             if (!File.Exists(_fileName))
                 throw new FileNotFoundException(_fileName);
 
-            using var reader = new BinaryReader(new FileStream(_fileName, FileMode.Open));
-
-            _tapeFileType = await GetTapeFileTypeAsync(reader);
-
-            if (_tapeFileType == TapeFileTypeEnum.Unknown)
-                throw new ArgumentException($"File {fileName} has incompatible format.");
-
-            while (reader.BaseStream.Position < reader.BaseStream.Length)
+            using (var reader = new BinaryReader(new FileStream(_fileName, FileMode.Open)))
             {
-                var block = await ReadBlockAsync(reader);
-                _blocks.Add(block);
+                _tapeFileType = await GetTapeFileTypeAsync(reader);
+                if (_tapeFileType == TapeFileTypeEnum.Unknown)
+                    throw new ArgumentException($"File {fileName} has incompatible format.");
+                while (reader.BaseStream.Position < reader.BaseStream.Length)
+                {
+                    var block = await ReadBlockAsync(reader);
+                    _blocks.Add(block);
+                }
             }
         }
 

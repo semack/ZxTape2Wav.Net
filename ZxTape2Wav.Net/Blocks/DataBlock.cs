@@ -25,7 +25,7 @@ namespace ZxTape2Wav.Blocks
         public ushort TailMs { get; protected set; }
         public byte[] Data { get; protected set; }
 
-        public byte CheckSum => Data[^1];
+        public byte CheckSum => Data[Data.Length - 1];
 
         public override bool IsValid => ByteHelper.CheckCrc(Data, CheckSum);
 

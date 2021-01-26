@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net5.0</TargetFramework>
+        <TargetFramework>netstandard2.0</TargetFramework>
         <RootNamespace>ZxTape2Wav</RootNamespace>
         <PackageId>ZxTape2Wav.Net</PackageId>
         <Title>Zx-Spectrum TAP/TZX file to Wav converter library</Title>
@@ -13,6 +13,7 @@
         <Description>Library to convert .TAP/.TZX files (a data format for ZX-Spectrum emulator) into sound WAV file.</Description>
         <PackageTags>tap converter utility csharp dotnet tape wav zx-spectrum tzx</PackageTags>
         <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+        <LangVersion>8</LangVersion>
     </PropertyGroup>
 
 </Project>
