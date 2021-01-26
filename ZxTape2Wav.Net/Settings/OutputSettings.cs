@@ -4,5 +4,6 @@ namespace ZxTape2Wav.Settings
     {
         public bool AmplifySoundSignal { get; set; }
         public int Frequency { get; set; } = 22050;
+        public bool ValidateCheckSum { get; set; } = false;
     }
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ZxTape2Wav.Blocks;
@@ -19,9 +20,17 @@ namespace ZxTape2Wav.AudioBuilders
             const int WAV_HEADER_SIZE = 40;
             writer.Seek(WAV_HEADER_SIZE, SeekOrigin.Begin);
 
-            foreach (var block in blocks)
+            var index = 0;
+            foreach (var block in blocks.Where(x => x.IsValuable))
+            {
+                if (settings.ValidateCheckSum && !block.IsValid)
+                    throw new ArgumentException($"Block {block.GetType().Name} #{index} has incorrect CheckSum.");
+
                 if (block is DataBlock dataBlock)
                     await SaveSoundDataAsync(writer, dataBlock, settings);
+
+                index++;
+            }
 
             var len = (int) writer.BaseStream.Length - WAV_HEADER_SIZE;
             await WriteHeaderAsync(writer, len, settings.Frequency);
@@ -80,8 +89,6 @@ namespace ZxTape2Wav.AudioBuilders
             // writing data
             foreach (var d in block.Data)
                 await WriteDataByteAsync(writer, block, d, hi, lo, settings.Frequency);
-
-            await WriteDataByteAsync(writer, block, block.CheckSum, hi, lo, settings.Frequency);
 
             // last sync
             for (var i = 7; i >= 8 - block.Rem; i--)

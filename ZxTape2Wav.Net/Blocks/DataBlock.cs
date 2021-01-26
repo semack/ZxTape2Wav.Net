@@ -24,7 +24,8 @@ namespace ZxTape2Wav.Blocks
         public byte Rem { get; protected set; }
         public ushort TailMs { get; protected set; }
         public byte[] Data { get; protected set; }
-        public byte CheckSum { get; protected set; }
+
+        public byte CheckSum => Data[^1];
 
         public override bool IsValid => ByteHelper.CheckCrc(Data, CheckSum);
 
@@ -39,8 +40,7 @@ namespace ZxTape2Wav.Blocks
             Rem = 8;
             PilotLen = 8083;
             var dl = reader.ReadUInt16();
-            Data = reader.ReadBytes(dl - 1);
-            CheckSum = reader.ReadByte();
+            Data = reader.ReadBytes(dl);
             if (Data[0] >= 128)
                 PilotLen = 3223;
         }

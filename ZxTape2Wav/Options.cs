@@ -15,5 +15,8 @@ namespace ZxTape2Wav
 
         [Option('o', "output", Required = false, HelpText = "target WAV file")]
         public string Output { get; set; }
+
+        [Option('v', "validate", Required = false, HelpText = "validate data blocks check sum")]
+        public bool ValidateCheckSum { get; set; }
     }
 }

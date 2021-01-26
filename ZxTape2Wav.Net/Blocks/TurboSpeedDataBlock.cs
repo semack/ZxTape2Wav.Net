@@ -1,6 +1,4 @@
-using System;
 using System.IO;
-using ZxTape2Wav.Helpers;
 
 namespace ZxTape2Wav.Blocks
 {
@@ -23,8 +21,7 @@ namespace ZxTape2Wav.Blocks
             TailMs = reader.ReadUInt16();
             var d = reader.ReadBytes(3);
             var dl = (d[2] << 16) + (d[1] << 8) + d[0];
-            Data = reader.ReadBytes(dl - 1);
-            CheckSum = reader.ReadByte();
+            Data = reader.ReadBytes(dl);
         }
     }
 }

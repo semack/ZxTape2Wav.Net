@@ -1,5 +1,4 @@
 using System.IO;
-using System.Text;
 using ZxTape2Wav.Blocks.Abstract;
 
 namespace ZxTape2Wav.Blocks

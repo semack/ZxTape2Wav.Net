@@ -25,10 +25,11 @@ Please build the solution before using the tool.
       source TAP file
 -o string
       target WAV file
+-v    validate data blocks checksum
 ```
 ### Example of usage
 ```
-ZxTape2Wav -i RENEGADE.tzx
+ZxTape2Wav -i -v RENEGADE.tzx
 ZxTape2Wav -a -i RENEGADE.tap -o RENEGADE.wav -f 44100
 ```
 ## How to?

@@ -35,13 +35,7 @@ namespace ZxTape2Wav
             while (reader.BaseStream.Position < reader.BaseStream.Length)
             {
                 var block = await ReadBlockAsync(reader);
-                
-                if (block.IsValuable)
-                {
-                    if (!block.IsValid)
-                        throw new ArgumentException($"File {fileName} contains block with incorrect CheckSum.");
-                    _blocks.Add(block);
-                }
+                _blocks.Add(block);
             }
         }
 
@@ -122,6 +116,8 @@ namespace ZxTape2Wav
                         case TzxBlockTypeEnum.HardwareType:
                             result = new HardwareTypeDataBlock(reader);
                             break;
+                        default:
+                            throw new Exception($"Unrecognized block type {blockType:H}");
                     }
 
                     break;
