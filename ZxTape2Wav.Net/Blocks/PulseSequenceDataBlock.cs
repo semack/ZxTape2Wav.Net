@@ -5,6 +5,7 @@ namespace ZxTape2Wav.Blocks
 {
     internal class PulseSequenceDataBlock : BlockBase
     {
+        // PulseSequence = 0x13
         public PulseSequenceDataBlock(BinaryReader reader) : base(reader)
         {
         }

@@ -11,6 +11,7 @@ namespace ZxTape2Wav.Enums
         GroupStart = 0x21,
         GroupEnd = 0x22,
         TextDescription = 0x30,
-        ArchiveInfo = 0x32
+        ArchiveInfo = 0x32,
+        HardwareType = 0x33
     }
 }

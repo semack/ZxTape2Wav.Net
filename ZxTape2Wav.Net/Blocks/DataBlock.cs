@@ -6,6 +6,7 @@ namespace ZxTape2Wav.Blocks
 {
     internal class DataBlock : BlockBase
     {
+        // Basic Tap data block
         protected DataBlock()
         {
         }

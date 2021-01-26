@@ -35,12 +35,13 @@ namespace ZxTape2Wav
             while (reader.BaseStream.Position < reader.BaseStream.Length)
             {
                 var block = await ReadBlockAsync(reader);
-
-                if (!block.IsValid)
-                    throw new ArgumentException($"File {fileName} contains block with incorrect CheckSum.");
-
+                
                 if (block.IsValuable)
+                {
+                    if (!block.IsValid)
+                        throw new ArgumentException($"File {fileName} contains block with incorrect CheckSum.");
                     _blocks.Add(block);
+                }
             }
         }
 
@@ -117,6 +118,9 @@ namespace ZxTape2Wav
                             break;
                         case TzxBlockTypeEnum.ArchiveInfo:
                             result = new ArchiveInfoDataBlock(reader);
+                            break;
+                        case TzxBlockTypeEnum.HardwareType:
+                            result = new HardwareTypeDataBlock(reader);
                             break;
                     }
 

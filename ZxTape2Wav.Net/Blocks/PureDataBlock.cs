@@ -4,6 +4,8 @@ namespace ZxTape2Wav.Blocks
 {
     internal class PureDataBlock : StandardSpeedDataBlock
     {
+        
+        // PureDataBlock = 0x14
         public PureDataBlock(BinaryReader reader) : base(reader)
         {
         }
@@ -16,7 +18,10 @@ namespace ZxTape2Wav.Blocks
             TailMs = reader.ReadUInt16();
             var d = reader.ReadBytes(3);
             var dl = (d[2] << 16) + (d[1] << 8) + d[0];
-            Data = reader.ReadBytes(dl);
+            Data = reader.ReadBytes(dl-1);
+            CheckSum = reader.ReadByte();
         }
+
+        public override bool IsValid => true;
     }
 }

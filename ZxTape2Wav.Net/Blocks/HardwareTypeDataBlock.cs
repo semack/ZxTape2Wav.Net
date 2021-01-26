@@ -1,23 +1,21 @@
 using System.IO;
+using System.Reflection;
 using ZxTape2Wav.Blocks.Abstract;
 
 namespace ZxTape2Wav.Blocks
 {
-    internal class GroupStartDataBlock : BlockBase
+    internal class HardwareTypeDataBlock: BlockBase
     {
-        // GroupStart = 0x21
-        public string GroupName { get; private set; }
-
-        public GroupStartDataBlock(BinaryReader reader) : base(reader)
+        // HardwareType = 0x33
+        public HardwareTypeDataBlock(BinaryReader reader): base(reader)
         {
+            
         }
-
         public override bool IsValuable { get; } = false;
-
         protected override void LoadData(BinaryReader reader)
         {
             var l = reader.ReadByte();
-            GroupName = new string(reader.ReadChars(l));
+            reader.ReadBytes(l*3);
         }
     }
 }
