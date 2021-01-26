@@ -6,7 +6,7 @@ Extended .NET port of [zxtap-to-wav](https://github.com/raydac/zxtap-to-wav) imp
 
 Easy library & command line utility  to convert [.TAP](http://fileformats.archiveteam.org/wiki/TAP_(ZX_Spectrum)) / [.TZX](http://fileformats.archiveteam.org/wiki/TZX) files (a data format for ZX-Spectrum emulator) into [sound WAV file](https://en.wikipedia.org/wiki/WAV).
 
-##Library
+## Library
 ### Installation
 Before using of the library [Nuget Package](https://www.nuget.org/packages/Localization.AspNetCore.EntityFramework/) must be installed.
 ```
