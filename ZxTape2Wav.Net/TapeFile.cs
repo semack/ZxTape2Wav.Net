@@ -35,9 +35,11 @@ namespace ZxTape2Wav
         private async Task LoadAsync(Stream stream)
         {
             using var reader = new BinaryReader(stream);
+            
             _tapeFileType = await GetTapeFileTypeAsync(reader);
             if (_tapeFileType == TapeFileTypeEnum.Unknown)
-                throw new ArgumentException("Stream has incompatible format.");
+                throw new ArgumentException("The stream has incompatible format.");
+            
             while (reader.BaseStream.Position < reader.BaseStream.Length)
             {
                 var block = await ReadBlockAsync(reader);
@@ -77,6 +79,7 @@ namespace ZxTape2Wav
         private async Task<BlockBase> ReadBlockAsync(BinaryReader reader)
         {
             BlockBase result = null;
+            var position = reader.BaseStream.Position;
 
             switch (_tapeFileType)
             {
@@ -123,9 +126,8 @@ namespace ZxTape2Wav
                             result = new HardwareTypeDataBlock(reader);
                             break;
                         default:
-                            throw new Exception($"Unrecognized block type {blockType:H}");
+                            throw new InvalidDataException($"Unrecognized block type {blockType:H}, position {position}");
                     }
-
                     break;
                 }
             }
@@ -156,7 +158,7 @@ namespace ZxTape2Wav
                 if (!string.IsNullOrEmpty(_fileName))
                     fileName = Path.ChangeExtension(_fileName, ".wav");
                 else
-                    throw new Exception("output file name is not specified.");
+                    throw new Exception("The output file name is not specified.");
             }
 
             await SaveToWavAsync(new FileStream(fileName, FileMode.Create), settings);
