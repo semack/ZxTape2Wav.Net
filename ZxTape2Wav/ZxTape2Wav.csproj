@@ -1,7 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <RootNamespace>ZxTap2Wav</RootNamespace>
         <OutputType>Exe</OutputType>
         <TargetFramework>net5.0</TargetFramework>
         <PublishSingleFile>true</PublishSingleFile>
@@ -11,10 +10,6 @@
         <PublishReadyToRun>true</PublishReadyToRun>
         <PublishSingleFile>true</PublishSingleFile>
     </PropertyGroup>
-    
-    <ItemGroup>
-      <ProjectReference Include="..\ZxTap2Wav.Net\ZxTap2Wav.Net.csproj" />
-    </ItemGroup>
 
     <ItemGroup>
       <None Remove="test.tap" />
@@ -22,6 +17,10 @@
 
     <ItemGroup>
       <PackageReference Include="CommandLineParser" Version="2.8.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\ZxTape2Wav.Net\ZxTape2Wav.Net.csproj" />
     </ItemGroup>
 
 </Project>

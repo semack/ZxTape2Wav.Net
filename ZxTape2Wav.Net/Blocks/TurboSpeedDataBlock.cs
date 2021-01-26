@@ -1,6 +1,6 @@
 using System.IO;
 
-namespace ZxTap2Wav.Net.Processors.Tzx.Blocks
+namespace ZxTape2Wav.Blocks
 {
     internal class TurboSpeedDataBlock : StandardSpeedDataBlock
     {
@@ -15,8 +15,9 @@ namespace ZxTap2Wav.Net.Processors.Tzx.Blocks
             Rem = reader.ReadByte();
             TailMs = reader.ReadUInt16();
             var d = reader.ReadBytes(3);
-            var dl = d[2] << (16 + d[1]) << (8 + d[0]);
-            Data = reader.ReadBytes(dl);
+            var dl = (d[2] << 16) + (d[1] << 8) + d[0];
+            Data = reader.ReadBytes(dl - 1);
+            CheckSum = reader.ReadByte();
         }
     }
 }

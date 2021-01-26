@@ -1,6 +1,6 @@
-namespace ZxTap2Wav.Net.Processors.Tzx.Enums
+namespace ZxTape2Wav.Enums
 {
-    public enum TzxBlockTypeEnum : byte
+    internal enum TzxBlockTypeEnum : byte
     {
         StandardSpeedDataBlock = 0x10,
         TurboSpeedDataBlock = 0x11,

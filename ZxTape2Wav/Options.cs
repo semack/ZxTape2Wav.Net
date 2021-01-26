@@ -1,6 +1,6 @@
 using CommandLine;
 
-namespace ZxTap2Wav
+namespace ZxTape2Wav
 {
     public class Options
     {

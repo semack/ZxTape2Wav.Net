@@ -1,83 +1,49 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ZxTap2Wav.Net.Settings;
+using ZxTape2Wav.Blocks;
+using ZxTape2Wav.Blocks.Abstract;
+using ZxTape2Wav.Settings;
 
-namespace ZxTap2Wav.Net.Processors.Tap
+namespace ZxTape2Wav.Builders
 {
-    public sealed class TapProcessor : IFormatProcessor
+    internal static class WavBuilder
     {
-        private readonly List<TapBlock> _blocks = new();
-
-        public async Task<bool> LoadAsync(Stream source)
-        {
-            using var reader = new BinaryReader(source);
-
-            while (reader.BaseStream.Position < reader.BaseStream.Length)
-            {
-                var block = await ReadTapeBlockAsync(reader);
-                if (!IsCrcValid(block))
-                    return false;
-
-                _blocks.Add(block);
-            }
-
-            return true;
-        }
-
-        public async Task FillWavStreamAsync(Stream stream, OutputSettings settings)
+        public static async Task BuildAsync(IEnumerable<BlockBase> blocks, Stream target, OutputSettings settings)
         {
             const int WAV_HEADER_SIZE = 40;
 
-            await using var writer = new BinaryWriter(stream);
+            await using var writer = new BinaryWriter(target);
 
             // reserve for wav header
             writer.Seek(WAV_HEADER_SIZE, SeekOrigin.Begin);
 
-            var len = 0;
-            for (var index = 0; index < _blocks.Count; index++)
-            {
-                if (index > 0 || settings.SilenceOnStart)
-                    for (var i = 0; i < settings.Frequency * settings.GapBetweenBlocks; i++)
-                    {
-                        writer.Write(0x00); // - silence (original value was 0x80)
-                        len++;
-                    }
+            var index = 0;
 
-                await SaveSoundDataAsync(writer, _blocks[index], settings);
+            foreach (var block in blocks)
+            {
+                if (block is DataBlock)
+                {
+                    if (index > 0 || settings.SilenceOnStart)
+                        for (var i = 0; i < settings.Frequency * settings.GapBetweenBlocks; i++)
+                            writer.Write(0x00); // - silence (original value was 0x80)
+
+                    await SaveSoundDataAsync(writer, (DataBlock) block, settings);
+                }
+
+                index++;
             }
 
-            len = (int) writer.BaseStream.Length - WAV_HEADER_SIZE;
+            var len = (int) writer.BaseStream.Length - WAV_HEADER_SIZE;
             await WriteHeaderAsync(writer, len, settings.Frequency);
 
             writer.Flush();
             writer.Close();
         }
 
-        private bool IsCrcValid(TapBlock block)
-        {
-            return block.CheckSum == block.Data
-                .Aggregate<byte, byte>(0, (current, t) => (byte) (current ^ t));
-        }
-
-
-        private async Task<TapBlock> ReadTapeBlockAsync(BinaryReader reader)
-        {
-            var array = reader.ReadBytes(2);
-            var length = (array[1] << 8) | array[0];
-
-            var result = new TapBlock
-            {
-                Data = reader.ReadBytes(length - 1),
-                CheckSum = reader.ReadByte()
-            };
-            return await Task.FromResult(result);
-        }
-
-        private async Task WriteHeaderAsync(BinaryWriter writer, int len, int frequency)
+        private static async Task WriteHeaderAsync(BinaryWriter writer, int len, int frequency)
         {
             writer.Seek(0, SeekOrigin.Begin);
             writer.Write(Encoding.ASCII.GetBytes("RIFF"));
@@ -95,7 +61,8 @@ namespace ZxTap2Wav.Net.Processors.Tap
             await Task.CompletedTask;
         }
 
-        private async Task SaveSoundDataAsync(BinaryWriter writer, TapBlock block, OutputSettings settings)
+
+        private static async Task SaveSoundDataAsync(BinaryWriter writer, DataBlock block, OutputSettings settings)
         {
             const int PULSELEN_PILOT = 2168;
             const int PULSELEN_SYNC1 = 667;

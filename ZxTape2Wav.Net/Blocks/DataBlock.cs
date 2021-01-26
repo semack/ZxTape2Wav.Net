@@ -1,9 +1,19 @@
 using System.IO;
+using ZxTape2Wav.Blocks.Abstract;
+using ZxTape2Wav.Helpers;
 
-namespace ZxTap2Wav.Net.Processors.Tzx.Blocks
+namespace ZxTape2Wav.Blocks
 {
-    internal class StandardSpeedDataBlock : BlockBase
+    internal class DataBlock : BlockBase
     {
+        protected DataBlock()
+        {
+        }
+
+        public DataBlock(BinaryReader reader) : base(reader)
+        {
+        }
+
         public ushort PilotPulseLen { get; protected set; }
         public ushort FirstSyncLen { get; protected set; }
         public ushort SecondSyncLen { get; protected set; }
@@ -13,12 +23,11 @@ namespace ZxTap2Wav.Net.Processors.Tzx.Blocks
         public byte Rem { get; protected set; }
         public ushort TailMs { get; protected set; }
         public byte[] Data { get; protected set; }
+        public byte CheckSum { get; protected set; }
 
-        public StandardSpeedDataBlock()
-        {
-        }
+        public override bool IsValid => ByteHelper.CheckCrc(Data, CheckSum);
 
-        public StandardSpeedDataBlock(BinaryReader reader)
+        protected override void LoadData(BinaryReader reader)
         {
             PilotPulseLen = 2168;
             FirstSyncLen = 667;
@@ -28,15 +37,11 @@ namespace ZxTap2Wav.Net.Processors.Tzx.Blocks
             TailMs = 1000;
             Rem = 8;
             PilotLen = 8083;
-
-            TailMs = reader.ReadUInt16();
-            
             var dl = reader.ReadUInt16();
-            Data = reader.ReadBytes(dl);
+            Data = reader.ReadBytes(dl - 1);
+            CheckSum = reader.ReadByte();
             if (Data[0] >= 128)
                 PilotLen = 3223;
         }
-
-        public override bool IsValuable { get; } = true;
     }
 }

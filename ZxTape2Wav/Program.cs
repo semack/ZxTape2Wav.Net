@@ -1,8 +1,7 @@
 ﻿using CommandLine;
-using ZxTap2Wav.Net;
-using ZxTap2Wav.Net.Settings;
+using ZxTape2Wav.Settings;
 
-namespace ZxTap2Wav
+namespace ZxTape2Wav
 {
     internal class Program
     {
@@ -20,7 +19,7 @@ namespace ZxTap2Wav
                         settings.GapBetweenBlocks = o.Gap;
                     if (o.Silence)
                         settings.SilenceOnStart = o.Silence;
-                    var tape = await Tape.CreateAsync(o.Input);
+                    var tape = await TapeFile.CreateAsync(o.Input);
                     await tape.SaveToWavAsync(o.Output, settings);
                 });
         }

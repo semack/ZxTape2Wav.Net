@@ -1,8 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZxTap2Wav.Net", "ZxTap2Wav.Net\ZxTap2Wav.Net.csproj", "{7380338D-F748-45A2-94ED-03CDB50E41BF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZxTape2Wav.Net", "ZxTape2Wav.Net\ZxTape2Wav.Net.csproj", "{7380338D-F748-45A2-94ED-03CDB50E41BF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZxTap2Wav", "ZxTap2Wav\ZxTap2Wav.csproj", "{A5547B3A-E949-4BB9-AB2B-3947BDBCD432}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZxTape2Wav", "ZxTape2Wav\ZxTape2Wav.csproj", "{A5547B3A-E949-4BB9-AB2B-3947BDBCD432}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
