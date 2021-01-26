@@ -13,7 +13,6 @@
 
     <ItemGroup>
       <None Remove="test.tap" />
-      <None Remove="test.tzx" />
       <None Remove="test.wav" />
     </ItemGroup>
 

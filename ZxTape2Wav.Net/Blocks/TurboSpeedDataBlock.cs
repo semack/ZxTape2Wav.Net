@@ -1,10 +1,16 @@
+using System;
 using System.IO;
+using ZxTape2Wav.Helpers;
 
 namespace ZxTape2Wav.Blocks
 {
     internal class TurboSpeedDataBlock : StandardSpeedDataBlock
     {
         public TurboSpeedDataBlock(BinaryReader reader) : base(reader)
+        {
+        }
+
+        protected override void LoadData(BinaryReader reader)
         {
             PilotPulseLen = reader.ReadUInt16();
             FirstSyncLen = reader.ReadUInt16();
