@@ -1,4 +1,4 @@
-# ZxTape2Wav.NET
+# ZxTape2Wav.Net
 
 Extended .NET port of [zxtap-to-wav](https://github.com/raydac/zxtap-to-wav) implemented in [Go-lang](https://en.wikipedia.org/wiki/Go_(programming_language)).
 
