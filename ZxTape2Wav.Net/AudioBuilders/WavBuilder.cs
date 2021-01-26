@@ -7,7 +7,7 @@ using ZxTape2Wav.Blocks;
 using ZxTape2Wav.Blocks.Abstract;
 using ZxTape2Wav.Settings;
 
-namespace ZxTape2Wav.Builders
+namespace ZxTape2Wav.AudioBuilders
 {
     internal static class WavBuilder
     {
@@ -25,13 +25,11 @@ namespace ZxTape2Wav.Builders
             foreach (var block in blocks)
             {
                 if (block is DataBlock)
-                {
-                    if (index > 0 || settings.SilenceOnStart)
-                        for (var i = 0; i < settings.Frequency * settings.GapBetweenBlocks; i++)
-                            writer.Write(0x00); // - silence (original value was 0x80)
+                    // if (index > 0 || settings.SilenceOnStart)
+                    //     for (var i = 0; i < settings.Frequency * settings.GapBetweenBlocks; i++)
+                    //         writer.Write(0x00); // - silence (original value was 0x80)
 
                     await SaveSoundDataAsync(writer, (DataBlock) block, settings);
-                }
 
                 index++;
             }
@@ -64,15 +62,6 @@ namespace ZxTape2Wav.Builders
 
         private static async Task SaveSoundDataAsync(BinaryWriter writer, DataBlock block, OutputSettings settings)
         {
-            const int PULSELEN_PILOT = 2168;
-            const int PULSELEN_SYNC1 = 667;
-            const int PULSELEN_SYNC2 = 735;
-            const int PULSELEN_SYNC3 = 954;
-            const int IMPULSNUMBER_PILOT_HEADER = 8063;
-            const int IMPULSNUMBER_PILOT_DATA = 3223;
-
-            var pilotImpulses = block.Data[0] < 128 ? IMPULSNUMBER_PILOT_HEADER : IMPULSNUMBER_PILOT_DATA;
-
             byte hi, lo;
             if (settings.AmplifySoundSignal)
             {
@@ -87,23 +76,41 @@ namespace ZxTape2Wav.Builders
 
             var signalState = hi;
 
-            for (var i = 0; i < pilotImpulses; i++)
+            for (var i = 0; i < block.PilotLen; i++)
             {
-                await DoSignalAsync(writer, signalState, PULSELEN_PILOT, settings.Frequency);
+                await DoSignalAsync(writer, signalState, block.PilotPulseLen, settings.Frequency);
                 signalState = signalState == hi ? lo : hi;
             }
 
             if (signalState == lo)
-                await DoSignalAsync(writer, lo, PULSELEN_PILOT, settings.Frequency);
+                await DoSignalAsync(writer, lo, block.PilotPulseLen, settings.Frequency);
 
-            await DoSignalAsync(writer, hi, PULSELEN_SYNC1, settings.Frequency);
-            await DoSignalAsync(writer, lo, PULSELEN_SYNC2, settings.Frequency);
+            await DoSignalAsync(writer, hi, block.FirstSyncLen, settings.Frequency);
+            await DoSignalAsync(writer, lo, block.SecondSyncLen, settings.Frequency);
 
+            // writing data
             foreach (var d in block.Data)
-                await WriteDataByteAsync(writer, d, hi, lo, settings.Frequency);
+                await WriteDataByteAsync(writer, block, d, hi, lo, settings.Frequency);
 
-            await WriteDataByteAsync(writer, block.CheckSum, hi, lo, settings.Frequency);
-            await DoSignalAsync(writer, hi, PULSELEN_SYNC3, settings.Frequency);
+            await WriteDataByteAsync(writer, block, block.CheckSum, hi, lo, settings.Frequency);
+
+            // last sync
+            for (var i = 7; i >= 8 - block.Rem; i--)
+                if ((block.CheckSum & (1 << i)) != 0)
+                {
+                    await WriteDataByteAsync(writer, block, (byte) block.OneLen, hi, lo, settings.Frequency);
+                    await WriteDataByteAsync(writer, block, (byte) block.OneLen, hi, lo, settings.Frequency);
+                }
+                else
+                {
+                    await WriteDataByteAsync(writer, block, (byte) block.ZeroLen, hi, lo, settings.Frequency);
+                    await WriteDataByteAsync(writer, block, (byte) block.ZeroLen, hi, lo, settings.Frequency);
+                }
+
+            // adding pause
+            if (block.TailMs > 0)
+                for (var i = 0; i < settings.Frequency * (block.TailMs / 1000); i++)
+                    writer.Write(0x00);
         }
 
         private static async Task DoSignalAsync(BinaryWriter writer, byte signalLevel, int clks, int frequency)
@@ -117,17 +124,14 @@ namespace ZxTape2Wav.Builders
             await Task.CompletedTask;
         }
 
-        private static async Task WriteDataByteAsync(BinaryWriter writer, byte data, byte hi, byte lo,
+        private static async Task WriteDataByteAsync(BinaryWriter writer, DataBlock block, byte data, byte hi, byte lo,
             int frequency)
         {
-            const int PULSELEN_ZERO = 855;
-            const int PULSELEN_ONE = 1710;
-
             byte mask = 0x80;
 
             while (mask != 0)
             {
-                var len = (data & mask) == 0 ? PULSELEN_ZERO : PULSELEN_ONE;
+                var len = (data & mask) == 0 ? block.ZeroLen : block.OneLen;
                 await DoSignalAsync(writer, hi, len, frequency);
                 await DoSignalAsync(writer, lo, len, frequency);
                 mask >>= 1;
