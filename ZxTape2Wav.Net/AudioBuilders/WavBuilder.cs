@@ -20,10 +20,8 @@ namespace ZxTape2Wav.AudioBuilders
             writer.Seek(WAV_HEADER_SIZE, SeekOrigin.Begin);
 
             foreach (var block in blocks)
-            {
-                if (block is DataBlock)
-                    await SaveSoundDataAsync(writer, (DataBlock) block, settings);
-            }
+                if (block is DataBlock dataBlock)
+                    await SaveSoundDataAsync(writer, dataBlock, settings);
 
             var len = (int) writer.BaseStream.Length - WAV_HEADER_SIZE;
             await WriteHeaderAsync(writer, len, settings.Frequency);
@@ -91,8 +89,8 @@ namespace ZxTape2Wav.AudioBuilders
                 var d = (byte) block.ZeroLen;
                 if ((block.CheckSum & (1 << i)) != 0)
                     d = (byte) block.OneLen;
-                await WriteDataByteAsync(writer, block, (byte) d, hi, lo, settings.Frequency);
-                await WriteDataByteAsync(writer, block, (byte) d, hi, lo, settings.Frequency);
+                await WriteDataByteAsync(writer, block, d, hi, lo, settings.Frequency);
+                await WriteDataByteAsync(writer, block, d, hi, lo, settings.Frequency);
             }
 
             // adding pause
