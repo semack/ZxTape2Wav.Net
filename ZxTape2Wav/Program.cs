@@ -1,4 +1,5 @@
-﻿using CommandLine;
+﻿using System;
+using CommandLine;
 using ZxTape2Wav.Settings;
 
 namespace ZxTape2Wav
@@ -17,6 +18,7 @@ namespace ZxTape2Wav
                         settings.Frequency = o.Frequency;
                     var tape = await TapeFile.CreateAsync(o.Input);
                     await tape.SaveToWavAsync(o.Output, settings);
+                    Console.WriteLine("The file has been converted successfully.");
                 });
         }
     }

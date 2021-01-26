@@ -86,11 +86,11 @@ namespace ZxTape2Wav.AudioBuilders
             // last sync
             for (var i = 7; i >= 8 - block.Rem; i--)
             {
-                var d = (byte) block.ZeroLen;
+                var len = (byte) block.ZeroLen;
                 if ((block.CheckSum & (1 << i)) != 0)
-                    d = (byte) block.OneLen;
-                await WriteDataByteAsync(writer, block, d, hi, lo, settings.Frequency);
-                await WriteDataByteAsync(writer, block, d, hi, lo, settings.Frequency);
+                    len = (byte) block.OneLen;
+                await DoSignalAsync(writer, hi, len, settings.Frequency);
+                await DoSignalAsync(writer, lo, len, settings.Frequency);
             }
 
             // adding pause
