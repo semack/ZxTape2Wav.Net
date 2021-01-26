@@ -25,7 +25,10 @@ namespace ZxTape2Wav
         private async Task LoadAsync(string fileName)
         {
             _fileName = fileName;
-
+            
+            if (string.IsNullOrWhiteSpace(_fileName))
+                throw new ArgumentException("Input file name cannot be empty.");
+            
             if (!File.Exists(_fileName))
                 throw new FileNotFoundException(_fileName);
 

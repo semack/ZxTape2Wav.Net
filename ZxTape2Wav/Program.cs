@@ -19,8 +19,15 @@ namespace ZxTape2Wav
                     if (o.ValidateCheckSum)
                         settings.ValidateCheckSum = true;
                     var tape = await TapeFile.CreateAsync(o.Input);
-                    await tape.SaveToWavAsync(o.Output, settings);
-                    Console.WriteLine("The file has been converted successfully.");
+                    try
+                    {
+                        await tape.SaveToWavAsync(o.Output, settings);
+                        Console.WriteLine("The file has been converted successfully.");
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine($"Error: {e.Message}");
+                    }
                 });
         }
     }
