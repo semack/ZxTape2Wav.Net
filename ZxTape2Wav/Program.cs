@@ -15,8 +15,6 @@ namespace ZxTape2Wav
                         settings.AmplifySoundSignal = true;
                     if (o.Frequency != 0)
                         settings.Frequency = o.Frequency;
-                    if (o.Silence)
-                        settings.SilenceOnStart = o.Silence;
                     var tape = await TapeFile.CreateAsync(o.Input);
                     await tape.SaveToWavAsync(o.Output, settings);
                 });

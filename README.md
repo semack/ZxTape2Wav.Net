@@ -1,36 +1,27 @@
-# ZxTap2Wav.NET
+# ZxTape2Wav.NET
 
-.NET port of [zxtap-to-wav](https://github.com/raydac/zxtap-to-wav) implementated in [Go-lang](https://en.wikipedia.org/wiki/Go_(programming_language)).
+Extended .NET port of [zxtap-to-wav](https://github.com/raydac/zxtap-to-wav) implemented in [Go-lang](https://en.wikipedia.org/wiki/Go_(programming_language)).
 
 [![License Apache 2.0](https://img.shields.io/badge/license-Apache%20License%202.0-green.svg)](http://www.apache.org/licenses/LICENSE-2.0) ![development](https://github.com/semack/zxtap2wav/workflows/development/badge.svg?branch=development)
 
-Easy command line utility & Library to convert [.TAP files (a data format for ZX-Spectrum emulator)](http://fileformats.archiveteam.org/wiki/TAP_(ZX_Spectrum)) into [sound WAV file](https://en.wikipedia.org/wiki/WAV).
+Easy command line utility & Library to convert [.TAP](http://fileformats.archiveteam.org/wiki/TAP_(ZX_Spectrum)) / [.TZX](http://fileformats.archiveteam.org/wiki/TZX) files (a data format for ZX-Spectrum emulator) into [sound WAV file](https://en.wikipedia.org/wiki/WAV).
 
 # Arguments
 ```
 -a    amplify sound signal
 -f int
       frequency of result wav, in Hz (default 22050)
--g int
-      time gap between sound blocks, in seconds (default 1)
 -i string
       source TAP file
 -o string
       target WAV file
--s    add silence before the first file
 ```
 # Example
 ```
-ZxTap2Wav -i RENEGADE.tap
-ZxTap2Wav -a -i RENEGADE.tap -o RENEGADE.wav -f 44100 -s
+ZxTape2Wav -i RENEGADE.tzx
+ZxTape2Wav -a -i RENEGADE.tap -o RENEGADE.wav -f 44100
 ```
 # How to?
-
-## Make longer silence interval between files in WAV
-Just add `-g 2` or `-g 3` to make delay in 2 or 3 seconds.
-
-## Add silence in start of generated WAV file
-Use `-s` and silence will be generated in start of WAV file.
 
 ## I want 44100 Hz quantized WAV
 Use parameter `-f 44100`

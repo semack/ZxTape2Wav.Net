@@ -15,8 +15,5 @@ namespace ZxTape2Wav
 
         [Option('o', "output", Required = false, HelpText = "target WAV file")]
         public string Output { get; set; }
-
-        [Option('s', "silence", Required = false, HelpText = "add silence before the first file")]
-        public bool Silence { get; set; }
     }
 }
