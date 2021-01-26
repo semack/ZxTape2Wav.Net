@@ -18,6 +18,10 @@ namespace ZxTape2Wav
         private string _fileName;
         private TapeFileTypeEnum _tapeFileType = TapeFileTypeEnum.Unknown;
 
+        private TapeFile()
+        {
+        }
+
         private async Task LoadAsync(string fileName)
         {
             _fileName = fileName;
@@ -25,16 +29,19 @@ namespace ZxTape2Wav
             if (!File.Exists(_fileName))
                 throw new FileNotFoundException(_fileName);
 
-            using (var reader = new BinaryReader(new FileStream(_fileName, FileMode.Open)))
+            await LoadAsync(new FileStream(_fileName, FileMode.Open));
+        }
+
+        private async Task LoadAsync(Stream stream)
+        {
+            using var reader = new BinaryReader(stream);
+            _tapeFileType = await GetTapeFileTypeAsync(reader);
+            if (_tapeFileType == TapeFileTypeEnum.Unknown)
+                throw new ArgumentException("Stream has incompatible format.");
+            while (reader.BaseStream.Position < reader.BaseStream.Length)
             {
-                _tapeFileType = await GetTapeFileTypeAsync(reader);
-                if (_tapeFileType == TapeFileTypeEnum.Unknown)
-                    throw new ArgumentException($"File {fileName} has incompatible format.");
-                while (reader.BaseStream.Position < reader.BaseStream.Length)
-                {
-                    var block = await ReadBlockAsync(reader);
-                    _blocks.Add(block);
-                }
+                var block = await ReadBlockAsync(reader);
+                _blocks.Add(block);
             }
         }
 
@@ -134,14 +141,32 @@ namespace ZxTape2Wav
             return result;
         }
 
+        public static async Task<TapeFile> CreateAsync(Stream stream)
+        {
+            var result = new TapeFile();
+
+            await result.LoadAsync(stream);
+            return result;
+        }
+
         public async Task SaveToWavAsync(string fileName = null, OutputSettings settings = null)
         {
             if (string.IsNullOrWhiteSpace(fileName))
-                fileName = Path.ChangeExtension(_fileName, ".wav");
+            {
+                if (!string.IsNullOrEmpty(_fileName))
+                    fileName = Path.ChangeExtension(_fileName, ".wav");
+                else
+                    throw new Exception("output file name is not specified.");
+            }
 
+            await SaveToWavAsync(new FileStream(fileName, FileMode.Create), settings);
+        }
+
+        public async Task SaveToWavAsync(Stream stream, OutputSettings settings = null)
+        {
             settings ??= new OutputSettings();
 
-            await WavBuilder.BuildAsync(_blocks, new FileStream(fileName, FileMode.Create), settings);
+            await WavBuilder.BuildAsync(_blocks, stream, settings);
         }
     }
 }

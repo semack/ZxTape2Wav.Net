@@ -14,30 +14,28 @@ namespace ZxTape2Wav.AudioBuilders
     {
         public static async Task BuildAsync(IEnumerable<BlockBase> blocks, Stream target, OutputSettings settings)
         {
-            using (var writer = new BinaryWriter(target))
+            using var writer = new BinaryWriter(target);
+            // reserved for wav header
+            const int WAV_HEADER_SIZE = 40;
+            writer.Seek(WAV_HEADER_SIZE, SeekOrigin.Begin);
+
+            var index = 0;
+            foreach (var block in blocks.Where(x => x.IsValuable))
             {
-                // reserved for wav header
-                const int WAV_HEADER_SIZE = 40;
-                writer.Seek(WAV_HEADER_SIZE, SeekOrigin.Begin);
+                if (settings.ValidateCheckSum && !block.IsValid)
+                    throw new ArgumentException($"Block {block.GetType().Name} #{index} has incorrect CheckSum.");
 
-                var index = 0;
-                foreach (var block in blocks.Where(x => x.IsValuable))
-                {
-                    if (settings.ValidateCheckSum && !block.IsValid)
-                        throw new ArgumentException($"Block {block.GetType().Name} #{index} has incorrect CheckSum.");
+                if (block is DataBlock dataBlock)
+                    await SaveSoundDataAsync(writer, dataBlock, settings);
 
-                    if (block is DataBlock dataBlock)
-                        await SaveSoundDataAsync(writer, dataBlock, settings);
-
-                    index++;
-                }
-
-                var len = (int) writer.BaseStream.Length - WAV_HEADER_SIZE;
-                await WriteHeaderAsync(writer, len, settings.Frequency);
-
-                writer.Flush();
-                writer.Close();
+                index++;
             }
+
+            var len = (int) writer.BaseStream.Length - WAV_HEADER_SIZE;
+            await WriteHeaderAsync(writer, len, settings.Frequency);
+
+            writer.Flush();
+            writer.Close();
         }
 
         private static async Task WriteHeaderAsync(BinaryWriter writer, int len, int frequency)
