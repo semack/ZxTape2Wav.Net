@@ -13,25 +13,16 @@ namespace ZxTape2Wav.AudioBuilders
     {
         public static async Task BuildAsync(IEnumerable<BlockBase> blocks, Stream target, OutputSettings settings)
         {
-            const int WAV_HEADER_SIZE = 40;
-
             await using var writer = new BinaryWriter(target);
 
-            // reserve for wav header
+            // reserved for wav header
+            const int WAV_HEADER_SIZE = 40;
             writer.Seek(WAV_HEADER_SIZE, SeekOrigin.Begin);
-
-            var index = 0;
 
             foreach (var block in blocks)
             {
                 if (block is DataBlock)
-                    // if (index > 0 || settings.SilenceOnStart)
-                    //     for (var i = 0; i < settings.Frequency * settings.GapBetweenBlocks; i++)
-                    //         writer.Write(0x00); // - silence (original value was 0x80)
-
                     await SaveSoundDataAsync(writer, (DataBlock) block, settings);
-
-                index++;
             }
 
             var len = (int) writer.BaseStream.Length - WAV_HEADER_SIZE;
@@ -59,7 +50,6 @@ namespace ZxTape2Wav.AudioBuilders
             await Task.CompletedTask;
         }
 
-
         private static async Task SaveSoundDataAsync(BinaryWriter writer, DataBlock block, OutputSettings settings)
         {
             byte hi, lo;
@@ -82,6 +72,7 @@ namespace ZxTape2Wav.AudioBuilders
                 signalState = signalState == hi ? lo : hi;
             }
 
+            // pilot
             if (signalState == lo)
                 await DoSignalAsync(writer, lo, block.PilotPulseLen, settings.Frequency);
 
@@ -96,16 +87,13 @@ namespace ZxTape2Wav.AudioBuilders
 
             // last sync
             for (var i = 7; i >= 8 - block.Rem; i--)
+            {
+                var d = (byte) block.ZeroLen;
                 if ((block.CheckSum & (1 << i)) != 0)
-                {
-                    await WriteDataByteAsync(writer, block, (byte) block.OneLen, hi, lo, settings.Frequency);
-                    await WriteDataByteAsync(writer, block, (byte) block.OneLen, hi, lo, settings.Frequency);
-                }
-                else
-                {
-                    await WriteDataByteAsync(writer, block, (byte) block.ZeroLen, hi, lo, settings.Frequency);
-                    await WriteDataByteAsync(writer, block, (byte) block.ZeroLen, hi, lo, settings.Frequency);
-                }
+                    d = (byte) block.OneLen;
+                await WriteDataByteAsync(writer, block, (byte) d, hi, lo, settings.Frequency);
+                await WriteDataByteAsync(writer, block, (byte) d, hi, lo, settings.Frequency);
+            }
 
             // adding pause
             if (block.TailMs > 0)
