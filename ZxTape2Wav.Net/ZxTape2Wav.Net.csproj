@@ -1,7 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
-        <RuntimeIdentifiers>win-x64;osx-x64;linux-x64</RuntimeIdentifiers>
         <RootNamespace>ZxTape2Wav</RootNamespace>
         <PackageId>ZxTape2Wav.Net</PackageId>
         <Title>Zx-Spectrum TAP/TZX file to Wav converter library</Title>
