@@ -2,9 +2,9 @@ name: nuget
 
 on:
   push:
-    branches: [ push2nuget ]
+    branches: [ nuget ]
   pull_request:
-    branches: [ push2nuget ]
+    branches: [ nuget ]
 
 jobs:
   build:
