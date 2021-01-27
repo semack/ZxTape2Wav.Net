@@ -5,10 +5,11 @@ namespace ZxTape2Wav.Blocks
 {
     internal class PauseOrStopTheTapeDataBlock : BlockBase
     {
-        // PauseOrStopTheTape = 0x20
-        public PauseOrStopTheTapeDataBlock(BinaryReader reader) : base(reader)
+        public PauseOrStopTheTapeDataBlock(BinaryReader reader, int index) : base(reader, index)
         {
         }
+        // PauseOrStopTheTape = 0x20
+
 
         public ushort Duration { get; private set; }
 

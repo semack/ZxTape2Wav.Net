@@ -5,7 +5,7 @@ namespace ZxTape2Wav.Blocks
     internal class TurboSpeedDataBlock : StandardSpeedDataBlock
     {
         // TurboSpeedDataBlock = 0x11
-        public TurboSpeedDataBlock(BinaryReader reader) : base(reader)
+        public TurboSpeedDataBlock(BinaryReader reader, int index) : base(reader, index)
         {
         }
 

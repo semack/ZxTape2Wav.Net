@@ -4,17 +4,19 @@ namespace ZxTape2Wav.Blocks.Abstract
 {
     internal abstract class BlockBase
     {
-        protected BlockBase()
+        protected BlockBase(int index)
         {
+            Index = index;
         }
 
-        protected BlockBase(BinaryReader reader)
+        protected BlockBase(BinaryReader reader, int index) : this(index)
         {
             LoadData(reader);
         }
 
-        public virtual bool IsValuable { get; } = true;
         public virtual bool IsValid { get; } = true;
+
+        public int Index { get; }
         protected abstract void LoadData(BinaryReader reader);
     }
 }

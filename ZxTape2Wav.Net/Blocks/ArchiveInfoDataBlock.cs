@@ -7,13 +7,12 @@ namespace ZxTape2Wav.Blocks
     internal class ArchiveInfoDataBlock : BlockBase
     {
         //  ArchiveInfo = 0x32
-        public ArchiveInfoDataBlock(BinaryReader reader) : base(reader)
+        public ArchiveInfoDataBlock(BinaryReader reader, int index) : base(reader, index)
         {
         }
 
         public string Description { get; private set; }
 
-        public override bool IsValuable { get; } = false;
 
         protected override void LoadData(BinaryReader reader)
         {

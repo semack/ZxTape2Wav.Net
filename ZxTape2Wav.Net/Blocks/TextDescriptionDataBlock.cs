@@ -6,13 +6,11 @@ namespace ZxTape2Wav.Blocks
     internal class TextDescriptionDataBlock : BlockBase
     {
         // TextDescription = 0x30
-        public TextDescriptionDataBlock(BinaryReader reader) : base(reader)
+        public TextDescriptionDataBlock(BinaryReader reader, int index) : base(reader, index)
         {
         }
 
         public string Label { get; private set; }
-
-        public override bool IsValuable { get; } = false;
 
         protected override void LoadData(BinaryReader reader)
         {

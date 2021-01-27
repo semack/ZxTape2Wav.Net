@@ -5,12 +5,10 @@ namespace ZxTape2Wav.Blocks
 {
     internal class HardwareTypeDataBlock : BlockBase
     {
-        // HardwareType = 0x33
-        public HardwareTypeDataBlock(BinaryReader reader) : base(reader)
+        public HardwareTypeDataBlock(BinaryReader reader, int index) : base(reader, index)
         {
         }
-
-        public override bool IsValuable { get; } = false;
+        // HardwareType = 0x33
 
         protected override void LoadData(BinaryReader reader)
         {

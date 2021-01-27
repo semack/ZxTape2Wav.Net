@@ -25,10 +25,10 @@ namespace ZxTape2Wav
         private async Task LoadAsync(string fileName)
         {
             _fileName = fileName;
-            
+
             if (string.IsNullOrWhiteSpace(_fileName))
                 throw new ArgumentException("Input file name cannot be empty.");
-            
+
             if (!File.Exists(_fileName))
                 throw new FileNotFoundException(_fileName);
 
@@ -38,15 +38,17 @@ namespace ZxTape2Wav
         private async Task LoadAsync(Stream stream)
         {
             using var reader = new BinaryReader(stream);
-            
+
             _tapeFileType = await GetTapeFileTypeAsync(reader);
             if (_tapeFileType == TapeFileTypeEnum.Unknown)
                 throw new ArgumentException("The stream has incompatible format.");
-            
+
+            var index = 0;
             while (reader.BaseStream.Position < reader.BaseStream.Length)
             {
-                var block = await ReadBlockAsync(reader);
+                var block = await ReadBlockAsync(reader, index);
                 _blocks.Add(block);
+                index++;
             }
         }
 
@@ -79,7 +81,7 @@ namespace ZxTape2Wav
             }
         }
 
-        private async Task<BlockBase> ReadBlockAsync(BinaryReader reader)
+        private async Task<BlockBase> ReadBlockAsync(BinaryReader reader, int index)
         {
             BlockBase result = null;
             var position = reader.BaseStream.Position;
@@ -87,7 +89,7 @@ namespace ZxTape2Wav
             switch (_tapeFileType)
             {
                 case TapeFileTypeEnum.Tap:
-                    result = new DataBlock(reader);
+                    result = new DataBlock(reader, index);
                     break;
                 case TapeFileTypeEnum.Tzx:
                 {
@@ -96,41 +98,43 @@ namespace ZxTape2Wav
                     switch (blockType)
                     {
                         case TzxBlockTypeEnum.StandardSpeedDataBlock:
-                            result = new StandardSpeedDataBlock(reader);
+                            result = new StandardSpeedDataBlock(reader, index);
                             break;
                         case TzxBlockTypeEnum.TurboSpeedDataBlock:
-                            result = new TurboSpeedDataBlock(reader);
+                            result = new TurboSpeedDataBlock(reader, index);
                             break;
                         case TzxBlockTypeEnum.PureTone:
-                            result = new PureToneDataBlock(reader);
+                            result = new PureToneDataBlock(reader, index);
                             break;
                         case TzxBlockTypeEnum.PureDataBlock:
-                            result = new PureDataBlock(reader);
+                            result = new PureDataBlock(reader, index);
                             break;
                         case TzxBlockTypeEnum.PulseSequence:
-                            result = new PulseSequenceDataBlock(reader);
+                            result = new PulseSequenceDataBlock(reader, index);
                             break;
                         case TzxBlockTypeEnum.PauseOrStopTheTape:
-                            result = new PauseOrStopTheTapeDataBlock(reader);
+                            result = new PauseOrStopTheTapeDataBlock(reader, index);
                             break;
                         case TzxBlockTypeEnum.GroupStart:
-                            result = new GroupStartDataBlock(reader);
+                            result = new GroupStartDataBlock(reader, index);
                             break;
                         case TzxBlockTypeEnum.GroupEnd:
-                            result = new GroupEndDataBlock();
+                            result = new GroupEndDataBlock(index);
                             break;
                         case TzxBlockTypeEnum.TextDescription:
-                            result = new TextDescriptionDataBlock(reader);
+                            result = new TextDescriptionDataBlock(reader, index);
                             break;
                         case TzxBlockTypeEnum.ArchiveInfo:
-                            result = new ArchiveInfoDataBlock(reader);
+                            result = new ArchiveInfoDataBlock(reader, index);
                             break;
                         case TzxBlockTypeEnum.HardwareType:
-                            result = new HardwareTypeDataBlock(reader);
+                            result = new HardwareTypeDataBlock(reader, index);
                             break;
                         default:
-                            throw new InvalidDataException($"Unrecognized block type {blockType:H}, position {position}");
+                            throw new InvalidDataException(
+                                $"Unrecognized type code {blockType:H} of block #{index}");
                     }
+
                     break;
                 }
             }

@@ -7,11 +7,11 @@ namespace ZxTape2Wav.Blocks
     internal class DataBlock : BlockBase
     {
         // Basic Tap data block
-        protected DataBlock()
+        protected DataBlock(int index) : base(index)
         {
         }
 
-        public DataBlock(BinaryReader reader) : base(reader)
+        public DataBlock(BinaryReader reader, int index) : base(reader, index)
         {
         }
 
@@ -25,9 +25,7 @@ namespace ZxTape2Wav.Blocks
         public ushort TailMs { get; protected set; }
         public byte[] Data { get; protected set; }
 
-        public byte CheckSum => Data[Data.Length - 1];
-
-        public override bool IsValid => ByteHelper.CheckCrc(Data, CheckSum);
+        public override bool IsValid => ByteHelper.CheckCrc(Data, Data[Data.Length - 1]);
 
         protected override void LoadData(BinaryReader reader)
         {

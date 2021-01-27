@@ -5,14 +5,13 @@ namespace ZxTape2Wav.Blocks
 {
     internal class GroupStartDataBlock : BlockBase
     {
-        public GroupStartDataBlock(BinaryReader reader) : base(reader)
+        public GroupStartDataBlock(BinaryReader reader, int index) : base(reader, index)
         {
         }
-
         // GroupStart = 0x21
-        public string GroupName { get; private set; }
 
-        public override bool IsValuable { get; } = false;
+
+        public string GroupName { get; private set; }
 
         protected override void LoadData(BinaryReader reader)
         {

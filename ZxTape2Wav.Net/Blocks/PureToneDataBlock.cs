@@ -6,7 +6,7 @@ namespace ZxTape2Wav.Blocks
     internal class PureToneDataBlock : BlockBase
     {
         // PureTone = 0x12;
-        public PureToneDataBlock(BinaryReader reader) : base(reader)
+        public PureToneDataBlock(BinaryReader reader, int index) : base(reader, index)
         {
         }
 

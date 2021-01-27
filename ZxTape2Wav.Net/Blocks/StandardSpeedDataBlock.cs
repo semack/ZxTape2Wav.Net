@@ -5,11 +5,7 @@ namespace ZxTape2Wav.Blocks
     internal class StandardSpeedDataBlock : DataBlock
     {
         // StandardSpeedDataBlock = 0x10
-        public StandardSpeedDataBlock(BinaryReader reader) : base(reader)
-        {
-        }
-
-        protected StandardSpeedDataBlock()
+        public StandardSpeedDataBlock(BinaryReader reader, int index) : base(reader, index)
         {
         }
 

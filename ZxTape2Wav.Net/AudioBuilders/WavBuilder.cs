@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ZxTape2Wav.Blocks;
@@ -19,17 +18,8 @@ namespace ZxTape2Wav.AudioBuilders
             const int WAV_HEADER_SIZE = 40;
             writer.Seek(WAV_HEADER_SIZE, SeekOrigin.Begin);
 
-            var index = 0;
-            foreach (var block in blocks.Where(x => x.IsValuable))
-            {
-                if (settings.ValidateCheckSum && !block.IsValid)
-                    throw new ArgumentException($"Block {block.GetType().Name} #{index} has incorrect CheckSum.");
-
-                if (block is DataBlock dataBlock)
-                    await SaveSoundDataAsync(writer, dataBlock, settings);
-
-                index++;
-            }
+            foreach (var block in blocks)
+                await SaveSoundDataAsync(writer, block, settings);
 
             var len = (int) writer.BaseStream.Length - WAV_HEADER_SIZE;
             await WriteHeaderAsync(writer, len, settings.Frequency);
@@ -56,7 +46,7 @@ namespace ZxTape2Wav.AudioBuilders
             await Task.CompletedTask;
         }
 
-        private static async Task SaveSoundDataAsync(BinaryWriter writer, DataBlock block, OutputSettings settings)
+        private static async Task SaveSoundDataAsync(BinaryWriter writer, BlockBase block, OutputSettings settings)
         {
             byte hi, lo;
             if (settings.AmplifySoundSignal)
@@ -70,39 +60,79 @@ namespace ZxTape2Wav.AudioBuilders
                 lo = 0x40;
             }
 
-            var signalState = hi;
-
-            for (var i = 0; i < block.PilotLen; i++)
+            switch (block)
             {
-                await DoSignalAsync(writer, signalState, block.PilotPulseLen, settings.Frequency);
-                signalState = signalState == hi ? lo : hi;
+                case DataBlock dataBlock:
+                {
+                    if (settings.ValidateCheckSum && !dataBlock.IsValid)
+                        throw new ArgumentException($"Block #{block.Index} has incorrect CheckSum.");
+
+                    var signalState = hi;
+
+                    for (var i = 0; i < dataBlock.PilotLen; i++)
+                    {
+                        await DoSignalAsync(writer, signalState, dataBlock.PilotPulseLen, settings.Frequency);
+                        signalState = signalState == hi ? lo : hi;
+                    }
+
+                    // pilot
+                    if (signalState == lo)
+                        await DoSignalAsync(writer, lo, dataBlock.PilotPulseLen, settings.Frequency);
+
+                    await DoSignalAsync(writer, hi, dataBlock.FirstSyncLen, settings.Frequency);
+                    await DoSignalAsync(writer, lo, dataBlock.SecondSyncLen, settings.Frequency);
+
+                    // writing data
+                    foreach (var d in dataBlock.Data)
+                        await WriteDataByteAsync(writer, dataBlock, d, hi, lo, settings.Frequency);
+
+                    // last sync
+                    for (var i = 7; i >= 8 - dataBlock.Rem; i--)
+                    {
+                        var len = (byte) dataBlock.ZeroLen;
+                        if ((dataBlock.Data[dataBlock.Data.Length - 1] & (1 << i)) != 0)
+                            len = (byte) dataBlock.OneLen;
+                        await DoSignalAsync(writer, hi, len, settings.Frequency);
+                        await DoSignalAsync(writer, lo, len, settings.Frequency);
+                    }
+
+                    // adding pause
+                    if (dataBlock.TailMs > 0)
+                        await WritePauseAsync(writer, dataBlock.TailMs, settings.Frequency);
+
+                    break;
+                }
+                case PauseOrStopTheTapeDataBlock pauseOrStopTheTapeDataBlock:
+                    await WritePauseAsync(writer, pauseOrStopTheTapeDataBlock.Duration, settings.Frequency);
+                    break;
+                case PulseSequenceDataBlock pulseSequenceDataBlock:
+                {
+                    foreach (var pulse in pulseSequenceDataBlock.Pulses)
+                    {
+                        await DoSignalAsync(writer, hi, pulse, settings.Frequency);
+                        await DoSignalAsync(writer, lo, pulse, settings.Frequency);
+                    }
+
+                    break;
+                }
+                case PureToneDataBlock pureToneDataBlock:
+                {
+                    for (var i = 0; i < pureToneDataBlock.Pluses; i++)
+                    {
+                        await DoSignalAsync(writer, hi, pureToneDataBlock.PulseLen, settings.Frequency);
+                        await DoSignalAsync(writer, lo, pureToneDataBlock.PulseLen, settings.Frequency);
+                    }
+
+                    break;
+                }
             }
+        }
 
-            // pilot
-            if (signalState == lo)
-                await DoSignalAsync(writer, lo, block.PilotPulseLen, settings.Frequency);
-
-            await DoSignalAsync(writer, hi, block.FirstSyncLen, settings.Frequency);
-            await DoSignalAsync(writer, lo, block.SecondSyncLen, settings.Frequency);
-
-            // writing data
-            foreach (var d in block.Data)
-                await WriteDataByteAsync(writer, block, d, hi, lo, settings.Frequency);
-
-            // last sync
-            for (var i = 7; i >= 8 - block.Rem; i--)
-            {
-                var len = (byte) block.ZeroLen;
-                if ((block.CheckSum & (1 << i)) != 0)
-                    len = (byte) block.OneLen;
-                await DoSignalAsync(writer, hi, len, settings.Frequency);
-                await DoSignalAsync(writer, lo, len, settings.Frequency);
-            }
-
-            // adding pause
-            if (block.TailMs > 0)
-                for (var i = 0; i < settings.Frequency * (block.TailMs / 1000); i++)
-                    writer.Write(0x00);
+        private static async Task WritePauseAsync(BinaryWriter writer, int ms, int frequency)
+        {
+            for (var i = 0; i < frequency * (ms / 1000); i++)
+                writer.Write(0x00);
+            await Task.CompletedTask;
         }
 
         private static async Task DoSignalAsync(BinaryWriter writer, byte signalLevel, int clks, int frequency)

@@ -5,7 +5,7 @@ namespace ZxTape2Wav.Blocks
     internal class PureDataBlock : StandardSpeedDataBlock
     {
         // PureDataBlock = 0x14
-        public PureDataBlock(BinaryReader reader) : base(reader)
+        public PureDataBlock(BinaryReader reader, int index) : base(reader, index)
         {
         }
 
