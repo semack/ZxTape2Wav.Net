@@ -2,7 +2,7 @@
 
 Extended .NET port of [zxtap-to-wav](https://github.com/raydac/zxtap-to-wav) implemented in [Go-lang](https://en.wikipedia.org/wiki/Go_(programming_language)).
 
-![release](https://github.com/semack/ZxTape2Wave.Net/workflows/release/badge.svg?branch=master) ![development](https://github.com/semack/zxtap2wav/workflows/development/badge.svg?branch=development) ![nuget](https://github.com/semack/ZxTape2Wave.Net/workflows/nuget/badge.svg?branch=nuget)
+![release](https://github.com/semack/ZxTape2Wave.Net/workflows/release/badge.svg?branch=master) ![development](https://github.com/semack/zxtap2wav/workflows/development/badge.svg?branch=development) ![nuget](https://github.com/semack/ZxTape2Wave.Net/workflows/nuget/badge.svg?branch=nuget) 
 
 Easy library & command line utility  to convert [.TAP](http://fileformats.archiveteam.org/wiki/TAP_(ZX_Spectrum)) / [.TZX](http://fileformats.archiveteam.org/wiki/TZX) files (a data format for ZX-Spectrum emulator) into [sound WAV file](https://en.wikipedia.org/wiki/WAV).
 
