@@ -14,8 +14,6 @@ namespace ZxTape2Wav.Blocks.Abstract
             LoadData(reader);
         }
 
-        public virtual bool IsValid { get; } = true;
-
         public int Index { get; }
         protected abstract void LoadData(BinaryReader reader);
     }

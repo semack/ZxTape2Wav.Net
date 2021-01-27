@@ -25,7 +25,7 @@ namespace ZxTape2Wav.Blocks
         public ushort TailMs { get; protected set; }
         public byte[] Data { get; protected set; }
 
-        public override bool IsValid => ByteHelper.CheckCrc(Data, Data[Data.Length - 1]);
+        public virtual bool IsValid => ByteHelper.CheckCrc(Data, Data[Data.Length - 1]);
 
         protected override void LoadData(BinaryReader reader)
         {
