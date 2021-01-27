@@ -1,4 +1,4 @@
-name: Push to NUGET
+name: nuget
 
 on:
   push:
