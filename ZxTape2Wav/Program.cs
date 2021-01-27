@@ -18,9 +18,9 @@ namespace ZxTape2Wav
                         settings.Frequency = o.Frequency;
                     if (o.ValidateCheckSum)
                         settings.ValidateCheckSum = true;
-                    var tape = await TapeFile.CreateAsync(o.Input);
                     try
                     {
+                        var tape = await TapeFile.CreateAsync(o.Input);
                         await tape.SaveToWavAsync(o.Output, settings);
                         Console.WriteLine("The file has been converted successfully.");
                     }
