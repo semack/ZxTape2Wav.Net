@@ -1,5 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
         <RootNamespace>ZxTape2Wav</RootNamespace>
@@ -14,6 +13,9 @@
         <PackageTags>tap converter utility csharp dotnet tape wav zx-spectrum tzx</PackageTags>
         <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
         <LangVersion>8</LangVersion>
+        <PackageIcon>icon.png</PackageIcon>
     </PropertyGroup>
-
+    <ItemGroup>
+        <None Include="Assets\icon.png" Pack="true" PackagePath="" />
+    </ItemGroup>
 </Project>
