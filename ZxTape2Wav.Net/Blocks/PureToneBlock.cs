@@ -3,10 +3,10 @@ using ZxTape2Wav.Blocks.Abstract;
 
 namespace ZxTape2Wav.Blocks
 {
-    internal class PureToneDataBlock : BlockBase
+    // PureTone = 0x12;
+    internal class PureToneBlock : BlockBase
     {
-        // PureTone = 0x12;
-        public PureToneDataBlock(BinaryReader reader, int index) : base(reader, index)
+        public PureToneBlock(BinaryReader reader, int index) : base(reader, index)
         {
         }
 

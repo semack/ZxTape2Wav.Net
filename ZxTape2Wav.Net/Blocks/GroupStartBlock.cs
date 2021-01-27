@@ -3,13 +3,12 @@ using ZxTape2Wav.Blocks.Abstract;
 
 namespace ZxTape2Wav.Blocks
 {
-    internal class GroupStartDataBlock : BlockBase
+    // GroupStart = 0x21
+    internal class GroupStartBlock : BlockBase
     {
-        public GroupStartDataBlock(BinaryReader reader, int index) : base(reader, index)
+        public GroupStartBlock(BinaryReader reader, int index) : base(reader, index)
         {
         }
-        // GroupStart = 0x21
-
 
         public string GroupName { get; private set; }
 

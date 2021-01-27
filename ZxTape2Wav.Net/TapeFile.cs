@@ -104,31 +104,31 @@ namespace ZxTape2Wav
                             result = new TurboSpeedDataBlock(reader, index);
                             break;
                         case TzxBlockTypeEnum.PureTone:
-                            result = new PureToneDataBlock(reader, index);
+                            result = new PureToneBlock(reader, index);
                             break;
                         case TzxBlockTypeEnum.PureDataBlock:
                             result = new PureDataBlock(reader, index);
                             break;
                         case TzxBlockTypeEnum.PulseSequence:
-                            result = new PulseSequenceDataBlock(reader, index);
+                            result = new PulseSequenceBlock(reader, index);
                             break;
                         case TzxBlockTypeEnum.PauseOrStopTheTape:
-                            result = new PauseOrStopTheTapeDataBlock(reader, index);
+                            result = new PauseOrStopTheTapeBlock(reader, index);
                             break;
                         case TzxBlockTypeEnum.GroupStart:
-                            result = new GroupStartDataBlock(reader, index);
+                            result = new GroupStartBlock(reader, index);
                             break;
                         case TzxBlockTypeEnum.GroupEnd:
-                            result = new GroupEndDataBlock(index);
+                            result = new GroupEndBlock(index);
                             break;
                         case TzxBlockTypeEnum.TextDescription:
-                            result = new TextDescriptionDataBlock(reader, index);
+                            result = new TextDescriptionBlock(reader, index);
                             break;
                         case TzxBlockTypeEnum.ArchiveInfo:
-                            result = new ArchiveInfoDataBlock(reader, index);
+                            result = new ArchiveInfoBlock(reader, index);
                             break;
                         case TzxBlockTypeEnum.HardwareType:
-                            result = new HardwareTypeDataBlock(reader, index);
+                            result = new HardwareTypeBlock(reader, index);
                             break;
                         default:
                             throw new InvalidDataException(

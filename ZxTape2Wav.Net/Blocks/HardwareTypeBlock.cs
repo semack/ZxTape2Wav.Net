@@ -3,12 +3,12 @@ using ZxTape2Wav.Blocks.Abstract;
 
 namespace ZxTape2Wav.Blocks
 {
-    internal class HardwareTypeDataBlock : BlockBase
+    // HardwareType = 0x33
+    internal class HardwareTypeBlock : BlockBase
     {
-        public HardwareTypeDataBlock(BinaryReader reader, int index) : base(reader, index)
+        public HardwareTypeBlock(BinaryReader reader, int index) : base(reader, index)
         {
         }
-        // HardwareType = 0x33
 
         protected override void LoadData(BinaryReader reader)
         {

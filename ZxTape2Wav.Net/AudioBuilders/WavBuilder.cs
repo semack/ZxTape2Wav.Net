@@ -15,13 +15,13 @@ namespace ZxTape2Wav.AudioBuilders
         {
             using var writer = new BinaryWriter(target);
             // reserved for wav header
-            const int WAV_HEADER_SIZE = 40;
-            writer.Seek(WAV_HEADER_SIZE, SeekOrigin.Begin);
+            const int wavHeaderSize = 40;
+            writer.Seek(40, SeekOrigin.Begin);
 
             foreach (var block in blocks)
                 await SaveSoundDataAsync(writer, block, settings);
 
-            var len = (int) writer.BaseStream.Length - WAV_HEADER_SIZE;
+            var len = (int) writer.BaseStream.Length - wavHeaderSize;
             await WriteHeaderAsync(writer, len, settings.Frequency);
 
             writer.Flush();
@@ -102,12 +102,12 @@ namespace ZxTape2Wav.AudioBuilders
 
                     break;
                 }
-                case PauseOrStopTheTapeDataBlock pauseOrStopTheTapeDataBlock:
+                case PauseOrStopTheTapeBlock pauseOrStopTheTapeDataBlock:
                     await WritePauseAsync(writer, pauseOrStopTheTapeDataBlock.Duration, settings.Frequency);
                     break;
-                case PulseSequenceDataBlock pulseSequenceDataBlock:
+                case PulseSequenceBlock pulseSequenceBlock:
                 {
-                    foreach (var pulse in pulseSequenceDataBlock.Pulses)
+                    foreach (var pulse in pulseSequenceBlock.Pulses)
                     {
                         await DoSignalAsync(writer, hi, pulse, settings.Frequency);
                         await DoSignalAsync(writer, lo, pulse, settings.Frequency);
@@ -115,12 +115,12 @@ namespace ZxTape2Wav.AudioBuilders
 
                     break;
                 }
-                case PureToneDataBlock pureToneDataBlock:
+                case PureToneBlock pureToneBlock:
                 {
-                    for (var i = 0; i < pureToneDataBlock.Pluses; i++)
+                    for (var i = 0; i < pureToneBlock.Pluses; i++)
                     {
-                        await DoSignalAsync(writer, hi, pureToneDataBlock.PulseLen, settings.Frequency);
-                        await DoSignalAsync(writer, lo, pureToneDataBlock.PulseLen, settings.Frequency);
+                        await DoSignalAsync(writer, hi, pureToneBlock.PulseLen, settings.Frequency);
+                        await DoSignalAsync(writer, lo, pureToneBlock.PulseLen, settings.Frequency);
                     }
 
                     break;

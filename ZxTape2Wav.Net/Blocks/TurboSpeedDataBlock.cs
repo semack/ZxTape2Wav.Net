@@ -2,9 +2,9 @@ using System.IO;
 
 namespace ZxTape2Wav.Blocks
 {
+    // TurboSpeedDataBlock = 0x11
     internal class TurboSpeedDataBlock : StandardSpeedDataBlock
     {
-        // TurboSpeedDataBlock = 0x11
         public TurboSpeedDataBlock(BinaryReader reader, int index) : base(reader, index)
         {
         }

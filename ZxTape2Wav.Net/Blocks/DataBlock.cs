@@ -4,9 +4,9 @@ using ZxTape2Wav.Helpers;
 
 namespace ZxTape2Wav.Blocks
 {
+    // Basic Data Block
     internal class DataBlock : BlockBase
     {
-        // Basic Tap data block
         protected DataBlock(int index) : base(index)
         {
         }

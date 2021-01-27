@@ -3,13 +3,12 @@ using ZxTape2Wav.Blocks.Abstract;
 
 namespace ZxTape2Wav.Blocks
 {
-    internal class PauseOrStopTheTapeDataBlock : BlockBase
+    // PauseOrStopTheTape = 0x20
+    internal class PauseOrStopTheTapeBlock : BlockBase
     {
-        public PauseOrStopTheTapeDataBlock(BinaryReader reader, int index) : base(reader, index)
+        public PauseOrStopTheTapeBlock(BinaryReader reader, int index) : base(reader, index)
         {
         }
-        // PauseOrStopTheTape = 0x20
-
 
         public ushort Duration { get; private set; }
 

@@ -4,10 +4,10 @@ using ZxTape2Wav.Blocks.Abstract;
 
 namespace ZxTape2Wav.Blocks
 {
-    internal class ArchiveInfoDataBlock : BlockBase
+    //  ArchiveInfo = 0x32
+    internal class ArchiveInfoBlock : BlockBase
     {
-        //  ArchiveInfo = 0x32
-        public ArchiveInfoDataBlock(BinaryReader reader, int index) : base(reader, index)
+        public ArchiveInfoBlock(BinaryReader reader, int index) : base(reader, index)
         {
         }
 
