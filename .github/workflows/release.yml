@@ -19,13 +19,13 @@ jobs:
     - name: Install dependencies
       run: dotnet restore 
     - name: Build win-x64
-      run: dotnet publish -r win-x64 -c Release --self-contained true -p:PublishSingleFile=true -p:PublishTrimmed=true --no-restore && 
+      run: dotnet publish ZxTape2Wav.Net/ZxTape2Wav.Net.csproj -r win-x64 -c Release --self-contained true -p:PublishSingleFile=true -p:PublishTrimmed=true --no-restore && 
            zip -r -j zxtape2wave-win-x64.zip ./ZxTape2Wave/bin/Release/*/win-x64/publish/*
     - name: Build linux-x64
-      run: dotnet publish -r linux-x64 -c Release --self-contained true -p:PublishSingleFile=true -p:PublishTrimmed=true --no-restore && 
+      run: dotnet publish ZxTape2Wav.Net/ZxTape2Wav.Net.csproj -r linux-x64 -c Release --self-contained true -p:PublishSingleFile=true -p:PublishTrimmed=true --no-restore && 
            zip -r -j zxtape2wave-linux-x64.zip ./ZxTape2Wave/bin/Release/*/linux-x64/publish/*
     - name: Build osx-x64
-      run: dotnet publish -r osx-x64 -c Release --self-contained true -p:PublishSingleFile=true -p:PublishTrimmed=true --no-restore && 
+      run: dotnet publish ZxTape2Wav.Net/ZxTape2Wav.Net.csproj -r osx-x64 -c Release --self-contained true -p:PublishSingleFile=true -p:PublishTrimmed=true --no-restore && 
            zip -r -j zxtape2wave-osx-x64.zip ./ZxTape2Wave/bin/Release/*/osx-x64/publish/*
     - name: Create Release
       id: create_release
