@@ -8,7 +8,7 @@ Easy library & command line utility  to convert [.TAP](http://fileformats.archiv
 
 ## Library
 ### Installation
-Before using of the library [Nuget Package](https://www.nuget.org/packages/Localization.AspNetCore.EntityFramework/) must be installed.
+Before using of the library [Nuget Package](https://www.nuget.org/packages/ZxTape2Wav.Net/) must be installed.
 ```
 Install-Package ZxTape2Wav.Net
 ```
