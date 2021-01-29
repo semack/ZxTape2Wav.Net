@@ -20,13 +20,13 @@ jobs:
       run: dotnet restore 
     - name: Build win-x64
       run: dotnet publish ZxTape2Wav/ZxTape2Wav.csproj  -r win-x64 -c Release --self-contained true -p:PublishSingleFile=true -p:PublishTrimmed=true --no-restore && 
-           zip -r -j zxtape2wave-win-x64.zip ./ZxTape2Wav/bin/Release/*/win-x64/publish/*
+           zip -r -j zxtape2wav-win-x64.zip ./ZxTape2Wav/bin/Release/*/win-x64/publish/*
     - name: Build linux-x64
       run: dotnet publish ZxTape2Wav/ZxTape2Wav.csproj  -r linux-x64 -c Release --self-contained true -p:PublishSingleFile=true -p:PublishTrimmed=true --no-restore && 
-           zip -r -j zxtape2wave-linux-x64.zip ./ZxTape2Wav/bin/Release/*/linux-x64/publish/*
+           zip -r -j zxtape2wav-linux-x64.zip ./ZxTape2Wav/bin/Release/*/linux-x64/publish/*
     - name: Build osx-x64
       run: dotnet publish ZxTape2Wav/ZxTape2Wav.csproj -r osx-x64 -c Release --self-contained true -p:PublishSingleFile=true -p:PublishTrimmed=true --no-restore && 
-           zip -r -j zxtape2wave-osx-x64.zip ./ZxTape2Wav/bin/Release/*/osx-x64/publish/*
+           zip -r -j zxtape2wav-osx-x64.zip ./ZxTape2Wav/bin/Release/*/osx-x64/publish/*
     - name: Create Release
       id: create_release
       uses: actions/create-release@v1
@@ -45,8 +45,8 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUBTOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }} 
-        asset_path: zxtape2wave-win-x64.zip
-        asset_name: zxtape2wave-win-x64.zip
+        asset_path: zxtape2wav-win-x64.zip
+        asset_name: zxtape2wav-win-x64.zip
         asset_content_type: application/zip
     - name: Upload Release Asset linux-x64 
       id: upload-release-asset-linux-x64
@@ -55,8 +55,8 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUBTOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: zxtape2wave-linux-x64.zip
-        asset_name: zxtape2wave-linux-x64.zip
+        asset_path: zxtape2wav-linux-x64.zip
+        asset_name: zxtape2wav-linux-x64.zip
         asset_content_type: application/zip
     - name: Upload Release Asset osx-x64 
       id: upload-release-asset-osx-64
@@ -65,6 +65,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUBTOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }} 
-        asset_path: zxtape2wave-osx-x64.zip
-        asset_name: zxtape2wave-osx-x64.zip
+        asset_path: zxtape2wav-osx-x64.zip
+        asset_name: zxtape2wav-osx-x64.zip
         asset_content_type: application/zip
